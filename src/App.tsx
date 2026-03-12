@@ -5,6 +5,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
+import GalleryPage from './pages/GalleryPage';
+import About from './pages/About';
+import ContactPage from './pages/ContactPage';
 
 export default function App() {
   return (
@@ -13,6 +16,9 @@ export default function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/admin"

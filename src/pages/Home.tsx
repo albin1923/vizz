@@ -124,16 +124,32 @@ function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          {['HOME', 'WEDDINGS', 'WEE EYES', 'CONTACT'].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase().replace(' ', '-')}`}
-              className="relative text-white/60 hover:text-white transition-colors text-sm tracking-widest group"
-            >
-              {item}
-              <span className="absolute -bottom-1 left-0 w-0 h-px group-hover:w-full transition-all duration-300" style={{ backgroundColor: GOLD }} />
-            </a>
-          ))}
+          {[
+            { label: 'HOME', href: '#home' },
+            { label: 'GALLERY', to: '/gallery' },
+            { label: 'ABOUT', to: '/about' },
+            { label: 'CONTACT', to: '/contact' },
+          ].map((item) =>
+            'to' in item && item.to ? (
+              <Link
+                key={item.label}
+                to={item.to}
+                className="relative text-white/60 hover:text-white transition-colors text-sm tracking-widest group"
+              >
+                {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-px group-hover:w-full transition-all duration-300" style={{ backgroundColor: GOLD }} />
+              </Link>
+            ) : (
+              <a
+                key={item.label}
+                href={item.href}
+                className="relative text-white/60 hover:text-white transition-colors text-sm tracking-widest group"
+              >
+                {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-px group-hover:w-full transition-all duration-300" style={{ backgroundColor: GOLD }} />
+              </a>
+            )
+          )}
           <Link
             to={user ? '/admin' : '/login'}
             className="text-sm tracking-widest px-5 py-2 rounded-full transition-all duration-300 border border-white/20 text-white hover:border-white/60 hover:bg-white/10"
@@ -155,16 +171,10 @@ function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-[#1A5252]/90 backdrop-blur-xl border-t border-white/10 px-6 pb-4 overflow-hidden rounded-b-2xl"
           >
-            {['HOME', 'WEDDINGS', 'WEE EYES', 'CONTACT'].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase().replace(' ', '-')}`}
-                onClick={() => setOpen(false)}
-                className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors"
-              >
-                {item}
-              </a>
-            ))}
+            <a href="#home" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">HOME</a>
+            <Link to="/gallery" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">GALLERY</Link>
+            <Link to="/about" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">ABOUT</Link>
+            <Link to="/contact" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">CONTACT</Link>
             <Link to={user ? '/admin' : '/login'} className="block text-white font-semibold text-sm tracking-widest py-2">
               {user ? 'DASHBOARD' : 'LOGIN'}
             </Link>
@@ -186,7 +196,7 @@ function Hero() {
       {/* Background image with parallax */}
       <motion.div className="absolute inset-0 z-0" style={{ y: imgY, scale: imgScale }}>
         <img
-          src="https://images.unsplash.com/photo-1606216794074-735e91aa2c92?auto=format&fit=crop&q=80&w=1920"
+          src="/gallery/3.jpeg"
           alt=""
           className="w-full h-full object-cover"
         />
@@ -248,20 +258,20 @@ function Hero() {
           transition={{ duration: 0.8, delay: 1.8 }}
           className="mt-12 flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <a
-            href="#weddings"
+          <Link
+            to="/gallery"
             className="border text-white px-10 py-4 rounded-full hover:bg-white hover:text-[#2D7272] transition-all duration-500 text-sm tracking-widest hover:shadow-lg hover:shadow-white/10"
             style={{ borderColor: `${GOLD}60` }}
           >
             VIEW PORTFOLIO
-          </a>
-          <a
-            href="#contact"
+          </Link>
+          <Link
+            to="/contact"
             className="px-10 py-4 rounded-full transition-all duration-500 text-sm tracking-widest text-[#1A5252] font-medium hover:shadow-xl hover:shadow-black/10 hover:scale-105"
             style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
           >
             GET IN TOUCH
-          </a>
+          </Link>
         </motion.div>
       </div>
 
@@ -339,10 +349,9 @@ function Features() {
   );
 }
 
-/* ─── Wedding Gallery ─── */
+/* ─── Wedding Gallery Preview ─── */
 function WeddingGallery() {
-  const { getByCategory } = usePhotos();
-  const photos = getByCategory('wedding');
+  const { photos } = usePhotos();
 
   return (
     <section id="weddings" className="py-28 bg-[#245E5E]">
@@ -359,42 +368,43 @@ function WeddingGallery() {
           <div className="w-12 h-px mx-auto mt-6" style={{ backgroundColor: `${GOLD}60` }} />
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {photos.map((photo, i) => (
-            <motion.div
-              key={photo.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.6 }}
-              whileHover={{ y: -4 }}
-              className="group relative aspect-[3/4] overflow-hidden rounded-2xl cursor-pointer shadow-lg shadow-black/10"
-            >
-              <img
-                src={photo.url}
-                alt={photo.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                <p className="text-white text-sm tracking-widest font-light">{photo.title}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {photos.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-3xl mx-auto aspect-[3/4] overflow-hidden rounded-3xl shadow-2xl shadow-black/20 group cursor-pointer"
+          >
+            <img
+              src={photos[0].url}
+              alt={photos[0].title}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+          </motion.div>
+        ) : (
+          <p className="text-center text-white/30 text-sm tracking-widest">Photos coming soon</p>
+        )}
 
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="text-center mt-14"
+          className="text-center mt-14 flex flex-col sm:flex-row justify-center gap-4"
         >
+          <Link
+            to="/gallery"
+            className="inline-flex items-center justify-center gap-2 text-sm tracking-widest px-8 py-3 rounded-full transition-all duration-300 text-[#1A5252] font-medium hover:scale-105"
+            style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
+          >
+            VIEW FULL GALLERY
+          </Link>
           <a
             href="https://www.instagram.com/vizzeyes_weddings"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm tracking-widest hover:gap-3 transition-all duration-300 px-6 py-3 rounded-full border border-white/10 hover:border-white/30"
+            className="inline-flex items-center justify-center gap-2 text-sm tracking-widest hover:gap-3 transition-all duration-300 px-6 py-3 rounded-full border border-white/10 hover:border-white/30"
             style={{ color: GOLD_LIGHT }}
           >
             <Instagram size={16} /> FOLLOW ON INSTAGRAM
@@ -407,9 +417,6 @@ function WeddingGallery() {
 
 /* ─── Wee Eyes Section ─── */
 function WeeEyes() {
-  const { getByCategory } = usePhotos();
-  const photos = getByCategory('kids');
-
   return (
     <section id="wee-eyes" className="py-28 bg-[#2D7272] relative overflow-hidden">
       <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-[0.03]" style={{ background: `radial-gradient(circle, ${GOLD}, transparent)` }} />
@@ -420,7 +427,7 @@ function WeeEyes() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center"
         >
           <p className="tracking-[0.4em] text-xs uppercase mb-3" style={{ color: GOLD }}>Our Sub-Brand</p>
           <h2 className="text-3xl md:text-5xl font-extralight tracking-widest text-white">
@@ -430,44 +437,18 @@ function WeeEyes() {
           <p className="text-white/50 max-w-xl mx-auto font-light leading-relaxed">
             A special corner for our littlest stars. Wee Eyes captures the innocent, playful, and heartwarming moments of childhood — from tiny toes to giant smiles.
           </p>
-        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16">
-          {photos.map((photo, i) => (
-            <motion.div
-              key={photo.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.12, duration: 0.6 }}
-              whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
-              className="aspect-square overflow-hidden rounded-3xl shadow-lg shadow-black/10"
+          <div className="mt-10">
+            <a
+              href="https://www.instagram.com/wee_eyes"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm tracking-widest hover:gap-3 transition-all duration-300 px-6 py-3 rounded-full border border-white/10 hover:border-white/30"
+              style={{ color: GOLD_LIGHT }}
             >
-              <img
-                src={photo.url}
-                alt={photo.title}
-                className="w-full h-full object-cover hover:scale-110 transition-transform duration-700"
-              />
-            </motion.div>
-          ))}
-        </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-14"
-        >
-          <a
-            href="https://www.instagram.com/wee_eyes"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm tracking-widest hover:gap-3 transition-all duration-300 px-6 py-3 rounded-full border border-white/10 hover:border-white/30"
-            style={{ color: GOLD_LIGHT }}
-          >
-            <Instagram size={16} /> FOLLOW WEE EYES
-          </a>
+              <Instagram size={16} /> FOLLOW WEE EYES
+            </a>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -556,6 +537,22 @@ function Contact() {
           >
             <Instagram size={18} />
           </a>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="mt-10"
+        >
+          <Link
+            to="/contact"
+            className="inline-flex items-center justify-center gap-2 text-sm tracking-widest px-8 py-3 rounded-full transition-all duration-300 text-[#1A5252] font-medium hover:scale-105"
+            style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
+          >
+            SEND US A MESSAGE
+          </Link>
         </motion.div>
       </div>
     </section>
