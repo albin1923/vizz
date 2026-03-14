@@ -8,6 +8,7 @@ import Admin from './pages/Admin';
 import GalleryPage from './pages/GalleryPage';
 import About from './pages/About';
 import ContactPage from './pages/ContactPage';
+import WeeEyesPage from './pages/WeeEyesPage';
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/about" element={<About />} />
+            <Route path="/wee-eyes" element={<WeeEyesPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<Login />} />
             <Route

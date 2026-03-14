@@ -1,13 +1,22 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Instagram, Mail, Phone, MapPin, Send } from 'lucide-react';
+import { ArrowLeft, Instagram, Mail, Phone, MapPin, Send, MessageCircle } from 'lucide-react';
 import { useState } from 'react';
+import { SITE_CONTACT, SITE_LINKS } from '../constants/site';
 
 const GOLD = '#C8A960';
 const GOLD_LIGHT = '#E2CC8B';
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
+  const whatsappPrimary = SITE_LINKS.whatsappFromPhone(
+    SITE_CONTACT.phones[0],
+    'Hi Vizz Eyes, I would like to know your availability and packages.'
+  );
+  const whatsappSecondary = SITE_LINKS.whatsappFromPhone(
+    SITE_CONTACT.phones[1],
+    'Hi Vizz Eyes, I am interested in booking a shoot.'
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +37,7 @@ export default function ContactPage() {
       </div>
 
       {/* Title */}
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
+      <div className="max-w-7xl mx-auto px-4 py-10 sm:py-16 text-center">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -41,7 +50,7 @@ export default function ContactPage() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="text-4xl md:text-6xl font-extralight tracking-widest text-white"
+          className="text-3xl sm:text-4xl md:text-6xl font-extralight tracking-widest text-white"
         >
           CONTACT
         </motion.h1>
@@ -54,7 +63,7 @@ export default function ContactPage() {
         />
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 pb-24 grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="max-w-6xl mx-auto px-4 pb-16 sm:pb-24 grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12">
         {/* Contact Info */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -63,7 +72,7 @@ export default function ContactPage() {
           className="space-y-10"
         >
           <div>
-            <h2 className="text-2xl font-light tracking-widest text-white mb-8">GET IN TOUCH</h2>
+            <h2 className="text-xl sm:text-2xl font-light tracking-widest text-white mb-8">GET IN TOUCH</h2>
             <p className="text-white/40 font-light leading-relaxed">
               Ready to capture your special moments? We'd love to hear from you. Reach out for bookings,
               enquiries, or just to say hello.
@@ -80,7 +89,9 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="text-white/30 text-xs tracking-[0.2em] uppercase mb-1">Email</p>
-                <p className="text-white/70 text-sm font-light">hello@vizzeyes.com</p>
+                <a href={`mailto:${SITE_CONTACT.email}`} className="text-white/70 text-sm font-light hover:text-white transition-colors">
+                  {SITE_CONTACT.email}
+                </a>
               </div>
             </div>
 
@@ -93,7 +104,24 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="text-white/30 text-xs tracking-[0.2em] uppercase mb-1">Phone</p>
-                <p className="text-white/70 text-sm font-light">+91 98765 43210</p>
+                <div className="space-y-1">
+                  <a
+                    href={whatsappPrimary}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-white/70 text-sm font-light hover:text-white transition-colors"
+                  >
+                    {SITE_CONTACT.phones[0]} (WhatsApp)
+                  </a>
+                  <a
+                    href={whatsappSecondary}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-white/70 text-sm font-light hover:text-white transition-colors"
+                  >
+                    {SITE_CONTACT.phones[1]} (WhatsApp)
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -106,7 +134,27 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="text-white/30 text-xs tracking-[0.2em] uppercase mb-1">Location</p>
-                <p className="text-white/70 text-sm font-light">Kerala, India</p>
+                <p className="text-white/70 text-sm font-light">{SITE_CONTACT.location}</p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-4">
+              <div
+                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: `${GOLD}15`, color: GOLD_LIGHT }}
+              >
+                <MessageCircle size={18} />
+              </div>
+              <div>
+                <p className="text-white/30 text-xs tracking-[0.2em] uppercase mb-1">Quick Chat</p>
+                <a
+                  href={whatsappPrimary}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/70 text-sm font-light hover:text-white transition-colors"
+                >
+                  Start WhatsApp Conversation
+                </a>
               </div>
             </div>
           </div>
@@ -114,9 +162,9 @@ export default function ContactPage() {
           {/* Social */}
           <div className="pt-4">
             <p className="text-white/30 text-xs tracking-[0.3em] uppercase mb-4">Follow Us</p>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <a
-                href="https://www.instagram.com/vizzeyes_weddings"
+                href={SITE_LINKS.instagramWedding}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 text-white/50 text-xs tracking-widest hover:border-white/30 hover:text-white transition-all duration-300"
@@ -124,7 +172,7 @@ export default function ContactPage() {
                 <Instagram size={14} /> @vizzeyes_weddings
               </a>
               <a
-                href="https://www.instagram.com/wee_eyes"
+                href={SITE_LINKS.instagramWeeEyes}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 text-white/50 text-xs tracking-widest hover:border-white/30 hover:text-white transition-all duration-300"
@@ -143,7 +191,7 @@ export default function ContactPage() {
         >
           <form
             onSubmit={handleSubmit}
-            className="p-8 md:p-10 rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm space-y-6"
+            className="p-6 sm:p-8 md:p-10 rounded-3xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm space-y-6"
           >
             <div>
               <label className="block text-white/30 text-xs tracking-[0.2em] uppercase mb-2">Name</label>
@@ -209,7 +257,7 @@ export default function ContactPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/[0.06] py-10 bg-[#0F3D3D]">
+      <footer className="border-t border-white/[0.06] py-8 sm:py-10 bg-[#0F3D3D]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="text-sm tracking-widest text-white/20 font-light">
             © {new Date().getFullYear()} VIZZ EYES

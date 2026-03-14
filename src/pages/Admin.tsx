@@ -31,20 +31,20 @@ export default function Admin() {
     <div className="min-h-screen bg-[#2D7272]">
       {/* ─── Top Bar ─── */}
       <header className="sticky top-0 z-40 bg-[#245E5E] border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 flex items-center justify-between h-14 sm:h-16 gap-2">
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-lg font-light tracking-widest text-white">
+            <Link to="/" className="text-sm sm:text-lg font-light tracking-[0.2em] text-white">
               VIZZ <span className="font-bold">EYES</span>
             </Link>
             <span className="hidden sm:block text-white/30">|</span>
             <span className="hidden sm:block text-xs tracking-widest text-white/50 uppercase">Dashboard</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Shield size={14} className="text-white/50" />
-              <span className="text-sm text-white/80">{user?.username}</span>
-              <span className={`text-[10px] tracking-wider px-2 py-0.5 rounded-full ${badge.color}`}>
+              <span className="text-xs sm:text-sm text-white/80 max-w-20 truncate">{user?.username}</span>
+              <span className={`text-[9px] sm:text-[10px] tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full ${badge.color}`}>
                 {badge.label}
               </span>
             </div>
@@ -59,7 +59,7 @@ export default function Admin() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8">
         {/* ─── Stats Row ─── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <StatCard icon={<Camera size={18} />} label="Total Photos" value={photos.length} />
@@ -97,7 +97,7 @@ export default function Admin() {
         </div>
 
         {/* ─── Photo Grid ─── */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
           <AnimatePresence>
             {filteredPhotos.map((photo) => (
               <PhotoCard
@@ -194,24 +194,24 @@ function PhotoCard({
       <img src={photo.url} alt={photo.title} className="w-full h-full object-cover" />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex flex-col justify-between p-3 opacity-0 group-hover:opacity-100">
+      <div className="absolute inset-0 bg-black/35 md:bg-black/0 md:group-hover:bg-black/40 transition-colors duration-300 flex flex-col justify-between p-2 sm:p-3 opacity-100 md:opacity-0 md:group-hover:opacity-100">
         <div className="flex justify-between items-start">
-          <span className="text-[10px] tracking-wider bg-white/80 text-gray-600 px-2 py-1 rounded-full capitalize">
+          <span className="text-[9px] sm:text-[10px] tracking-wider bg-white/85 text-gray-700 px-2 py-1 rounded-full capitalize">
             {photo.category === 'kids' ? 'Wee Eyes' : photo.category}
           </span>
           {canRemove && (
             <button
               onClick={onRequestDelete}
-              className="p-1.5 bg-red-500/80 hover:bg-red-500 text-white rounded-lg transition-colors"
+              className="p-1.5 sm:p-2 bg-red-500/90 hover:bg-red-500 text-white rounded-lg transition-colors"
               title="Remove photo"
             >
-              <Trash2 size={12} />
+              <Trash2 size={14} />
             </button>
           )}
         </div>
         <div>
-          <p className="text-white text-xs tracking-wider">{photo.title}</p>
-          <p className="text-white/60 text-[10px] tracking-wider">by {photo.uploadedBy} · {photo.uploadedAt}</p>
+          <p className="text-white text-[11px] sm:text-xs tracking-wider line-clamp-2">{photo.title}</p>
+          <p className="text-white/70 text-[9px] sm:text-[10px] tracking-wider">by {photo.uploadedBy} · {photo.uploadedAt}</p>
         </div>
       </div>
     </motion.div>
@@ -258,7 +258,7 @@ function UploadModal({
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.95, y: 10 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-[#245E5E] rounded-3xl w-full max-w-md p-6 shadow-xl border border-white/10"
+        className="bg-[#245E5E] rounded-3xl w-full max-w-md p-5 sm:p-6 shadow-xl border border-white/10 max-h-[92vh] overflow-y-auto"
       >
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-lg font-light tracking-widest text-white">UPLOAD PHOTO</h3>
@@ -274,7 +274,7 @@ function UploadModal({
             className="border-2 border-dashed border-white/20 hover:border-white/40 rounded-2xl p-6 text-center cursor-pointer transition-colors"
           >
             {preview ? (
-              <img src={preview} alt="Preview" className="w-full h-48 object-cover rounded-xl" />
+              <img src={preview} alt="Preview" className="w-full h-40 sm:h-48 object-cover rounded-xl" />
             ) : (
               <div className="py-8">
                 <Upload size={24} className="mx-auto mb-3 text-white/30" />
@@ -353,7 +353,7 @@ function DeleteModal({ onCancel, onConfirm }: { onCancel: () => void; onConfirm:
         animate={{ scale: 1 }}
         exit={{ scale: 0.95 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-[#245E5E] rounded-2xl w-full max-w-xs p-6 text-center shadow-xl border border-white/10"
+        className="bg-[#245E5E] rounded-2xl w-full max-w-xs p-5 sm:p-6 text-center shadow-xl border border-white/10"
       >
         <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
           <Trash2 size={18} className="text-red-400" />

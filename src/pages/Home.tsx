@@ -1,181 +1,150 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Menu, X, Instagram, Camera, Heart, Star, Sparkles, Users, Award } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { Menu, X, Instagram, Camera, Heart, Sparkles, Star, Phone, Mail } from 'lucide-react';
 import { usePhotos } from '../context/PhotoContext';
 import { useAuth } from '../context/AuthContext';
+import { SITE_CONTACT, SITE_LINKS } from '../constants/site';
 
-/* ─── Accent palette ─── */
 const GOLD = '#C8A960';
 const GOLD_LIGHT = '#E2CC8B';
 
-/* ─── Floating Particles (2-D decorative animation) ─── */
-function FloatingParticles() {
-  const particles = Array.from({ length: 18 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: Math.random() * 4 + 2,
-    duration: Math.random() * 12 + 10,
-    delay: Math.random() * 6,
-  }));
+const NAV_ITEMS = [
+  { label: 'HOME', href: '#home' },
+  { label: 'GALLERY', to: '/gallery' },
+  { label: 'WEE EYES', to: '/wee-eyes' },
+  { label: 'ABOUT', to: '/about' },
+  { label: 'CONTACT', to: '/contact' },
+] as const;
 
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-white/10"
-          style={{ left: `${p.x}%`, top: `${p.y}%`, width: p.size, height: p.size }}
-          animate={{
-            y: [0, -40, 0],
-            x: [0, 15, -15, 0],
-            opacity: [0, 0.6, 0],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
-    </div>
-  );
-}
+type ServiceItem = {
+  icon: typeof Camera;
+  title: string;
+  desc: string;
+  href?: string;
+  cta?: string;
+};
 
-/* ─── Animated lens/aperture ring (2-D SVG) ─── */
-function ApertureRing() {
-  return (
-    <motion.div
-      className="absolute z-[1] pointer-events-none"
-      style={{ right: '8%', top: '18%' }}
-      animate={{ rotate: 360 }}
-      transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-    >
-      <svg width="220" height="220" viewBox="0 0 220 220" fill="none" className="opacity-[0.07]">
-        <circle cx="110" cy="110" r="100" stroke="white" strokeWidth="1" strokeDasharray="12 8" />
-        <circle cx="110" cy="110" r="70" stroke="white" strokeWidth="0.5" strokeDasharray="6 10" />
-        <circle cx="110" cy="110" r="40" stroke="white" strokeWidth="0.5" />
-      </svg>
-    </motion.div>
-  );
-}
+const SERVICE_ITEMS: ServiceItem[] = [
+  {
+    icon: Camera,
+    title: 'Wedding Photography',
+    desc: 'Cinematic wedding coverage from rituals to reception moments.',
+    href: SITE_LINKS.instagramWedding,
+    cta: 'Open Wedding Instagram',
+  },
+  {
+    icon: Sparkles,
+    title: 'Kids Photography',
+    desc: 'Playful portraits through our Wee Eyes kids photography brand.',
+    href: SITE_LINKS.instagramWeeEyes,
+    cta: 'Open Wee Eyes Instagram',
+  },
+  {
+    icon: Heart,
+    title: 'Live Streaming',
+    desc: 'Professional live streaming for families who cannot attend in person.',
+  },
+  {
+    icon: Star,
+    title: 'Event Photography',
+    desc: 'Beautifully documented events with editorial style and candid energy.',
+  },
+  {
+    icon: Camera,
+    title: 'Photo Lamination',
+    desc: 'Premium finishing and lamination for long-lasting, vibrant prints.',
+  },
+  {
+    icon: Sparkles,
+    title: 'Album Designing',
+    desc: 'Story-driven albums designed with refined layouts and color grading.',
+  },
+];
 
-/* ─── Floating geometric shapes (2-D) ─── */
-function FloatingShapes() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-[1]">
-      {/* Diamond */}
-      <motion.div
-        className="absolute left-[10%] top-[30%] w-16 h-16 border border-white/[0.06] rotate-45"
-        animate={{ y: [0, -20, 0], rotate: [45, 55, 45] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      {/* Circle */}
-      <motion.div
-        className="absolute right-[20%] bottom-[25%] w-24 h-24 rounded-full border border-white/[0.05]"
-        animate={{ scale: [1, 1.15, 1], opacity: [0.05, 0.1, 0.05] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      {/* Small gold dot */}
-      <motion.div
-        className="absolute left-[25%] bottom-[20%] w-3 h-3 rounded-full"
-        style={{ backgroundColor: GOLD }}
-        animate={{ y: [0, -30, 0], opacity: [0.15, 0.4, 0.15] }}
-        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-      />
-      {/* Horizontal line */}
-      <motion.div
-        className="absolute left-[5%] top-[60%] w-32 h-px bg-white/[0.04]"
-        animate={{ scaleX: [0, 1, 0] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-      />
-    </div>
-  );
-}
-
-/* ─── Navbar (translucent + floating) ─── */
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const closeOnResize = () => {
+      if (window.innerWidth >= 768) setOpen(false);
+    };
+    window.addEventListener('resize', closeOnResize);
+    return () => window.removeEventListener('resize', closeOnResize);
   }, []);
 
   return (
     <motion.nav
-      initial={{ y: -100, opacity: 0 }}
+      initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, delay: 0.2 }}
-      className={`fixed z-50 transition-all duration-500 ${
-        scrolled
-          ? 'top-4 left-4 right-4 md:left-8 md:right-8 bg-[#1A5252]/70 backdrop-blur-xl rounded-2xl shadow-2xl shadow-black/20 border border-white/10'
-          : 'top-0 left-0 right-0 bg-transparent'
-      }`}
+      transition={{ duration: 0.7, delay: 0.12 }}
+      className="fixed z-50 top-3 left-3 right-3 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[min(96vw,1100px)]"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 flex justify-between items-center h-20">
-        <Link to="/" className="text-2xl font-light tracking-widest text-white">
-          VIZZ <span className="font-bold">EYES</span>
+      <div className="h-14 sm:h-16 px-4 sm:px-6 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-between">
+        <Link to="/" className="text-sm sm:text-base md:text-lg font-light tracking-[0.25em] text-white">
+          VIZZ <span className="font-semibold">EYES</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
-          {[
-            { label: 'HOME', href: '#home' },
-            { label: 'GALLERY', to: '/gallery' },
-            { label: 'ABOUT', to: '/about' },
-            { label: 'CONTACT', to: '/contact' },
-          ].map((item) =>
-            'to' in item && item.to ? (
-              <Link
-                key={item.label}
-                to={item.to}
-                className="relative text-white/60 hover:text-white transition-colors text-sm tracking-widest group"
-              >
+        <div className="hidden md:flex items-center gap-6">
+          {NAV_ITEMS.map((item) =>
+            'to' in item ? (
+              <Link key={item.label} to={item.to} className="text-[11px] tracking-[0.25em] text-white/70 hover:text-white transition-colors">
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px group-hover:w-full transition-all duration-300" style={{ backgroundColor: GOLD }} />
               </Link>
             ) : (
-              <a
-                key={item.label}
-                href={item.href}
-                className="relative text-white/60 hover:text-white transition-colors text-sm tracking-widest group"
-              >
+              <a key={item.label} href={item.href} className="text-[11px] tracking-[0.25em] text-white/70 hover:text-white transition-colors">
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px group-hover:w-full transition-all duration-300" style={{ backgroundColor: GOLD }} />
               </a>
             )
           )}
           <Link
             to={user ? '/admin' : '/login'}
-            className="text-sm tracking-widest px-5 py-2 rounded-full transition-all duration-300 border border-white/20 text-white hover:border-white/60 hover:bg-white/10"
+            className="text-[11px] tracking-[0.25em] px-4 py-2 rounded-full border border-white/20 text-white hover:border-white/50 hover:bg-white/10 transition-colors"
           >
             {user ? 'DASHBOARD' : 'LOGIN'}
           </Link>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="md:hidden text-white">
-          {open ? <X size={24} /> : <Menu size={24} />}
+        <button onClick={() => setOpen((v) => !v)} className="md:hidden text-white" aria-label="Toggle navigation">
+          {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-[#1A5252]/90 backdrop-blur-xl border-t border-white/10 px-6 pb-4 overflow-hidden rounded-b-2xl"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            className="mt-2 rounded-2xl border border-white/15 bg-[#164646]/85 backdrop-blur-xl p-3"
           >
-            <a href="#home" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">HOME</a>
-            <Link to="/gallery" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">GALLERY</Link>
-            <Link to="/about" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">ABOUT</Link>
-            <Link to="/contact" onClick={() => setOpen(false)} className="block text-white/70 text-sm tracking-widest py-2 hover:text-white transition-colors">CONTACT</Link>
-            <Link to={user ? '/admin' : '/login'} className="block text-white font-semibold text-sm tracking-widest py-2">
+            {NAV_ITEMS.map((item) =>
+              'to' in item ? (
+                <Link
+                  key={item.label}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="block py-2 px-2 text-xs tracking-[0.25em] text-white/75 hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="block py-2 px-2 text-xs tracking-[0.25em] text-white/75 hover:text-white"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
+            <Link
+              to={user ? '/admin' : '/login'}
+              onClick={() => setOpen(false)}
+              className="block py-2 px-2 text-xs tracking-[0.25em] text-white"
+            >
               {user ? 'DASHBOARD' : 'LOGIN'}
             </Link>
           </motion.div>
@@ -185,299 +154,205 @@ function Navbar() {
   );
 }
 
-/* ─── Hero ─── */
 function Hero() {
   const { scrollYProgress } = useScroll();
-  const imgY = useTransform(scrollYProgress, [0, 0.3], [0, 80]);
-  const imgScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
+  const imageY = useTransform(scrollYProgress, [0, 0.3], [0, 60]);
+  const imageScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.1]);
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image with parallax */}
-      <motion.div className="absolute inset-0 z-0" style={{ y: imgY, scale: imgScale }}>
-        <img
-          src="/gallery/3.jpeg"
-          alt=""
-          className="w-full h-full object-cover"
-        />
+    <section id="home" className="relative min-h-screen overflow-hidden flex items-center justify-center">
+      <motion.div className="absolute inset-0 z-0" style={{ y: imageY, scale: imageScale }}>
+        <img src="/gallery/3.jpeg" alt="Vizz Eyes hero" className="w-full h-full object-cover" />
       </motion.div>
+      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#153f3f]/80 via-[#1c5858]/75 to-[#1c5858]/95" />
+      <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_30%_30%,rgba(200,169,96,0.18),transparent_50%)]" />
 
-      {/* Gradient overlays */}
-      <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#1A5252]/85 via-[#2D7272]/75 to-[#2D7272]/95" />
-      <div className="absolute inset-0 z-[1] bg-gradient-to-r from-[#1A5252]/40 to-transparent" />
-
-      {/* 2-D animated elements */}
-      <FloatingParticles />
-      <ApertureRing />
-      <FloatingShapes />
-
-      {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-20 sm:pt-16">
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="tracking-[0.5em] text-xs mb-6 uppercase"
+          transition={{ duration: 0.7, delay: 0.25 }}
+          className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-5"
           style={{ color: GOLD_LIGHT }}
         >
           Premium Photography Agency
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.7, ease: 'easeOut' }}
-          className="text-6xl md:text-8xl lg:text-9xl font-extralight tracking-[0.15em] text-white mb-4"
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-4xl sm:text-6xl md:text-8xl font-extralight tracking-[0.14em] text-white"
         >
-          VIZZ{' '}
-          <span className="font-semibold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
-            EYES
-          </span>
+          VIZZ <span className="font-semibold">EYES</span>
         </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.55 }}
+          className="mt-3"
+        >
+          <Link
+            to="/wee-eyes"
+            className="inline-block text-sm sm:text-base tracking-[0.45em] uppercase text-white/85 hover:text-white transition-colors"
+            style={{ color: GOLD_LIGHT }}
+          >
+            Wee Eyes
+          </Link>
+        </motion.div>
 
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="w-20 h-px mx-auto my-8"
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="w-20 h-px mx-auto my-6"
           style={{ backgroundColor: GOLD }}
         />
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.4 }}
-          className="text-white/50 text-lg md:text-xl tracking-widest uppercase font-light max-w-xl mx-auto"
+          transition={{ delay: 0.8 }}
+          className="text-white/70 text-sm sm:text-lg tracking-[0.18em] uppercase font-light"
         >
           Capturing moments that last forever
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.8 }}
-          className="mt-12 flex flex-col sm:flex-row gap-4 justify-center"
+          transition={{ delay: 1 }}
+          className="mt-9 flex flex-col sm:flex-row gap-3 justify-center"
         >
           <Link
             to="/gallery"
-            className="border text-white px-10 py-4 rounded-full hover:bg-white hover:text-[#2D7272] transition-all duration-500 text-sm tracking-widest hover:shadow-lg hover:shadow-white/10"
-            style={{ borderColor: `${GOLD}60` }}
+            className="border text-white px-8 py-3.5 rounded-full hover:bg-white hover:text-[#1A5252] transition-colors text-xs sm:text-sm tracking-[0.2em]"
+            style={{ borderColor: `${GOLD}80` }}
           >
-            VIEW PORTFOLIO
+            OUR PORTFOLIO
           </Link>
           <Link
             to="/contact"
-            className="px-10 py-4 rounded-full transition-all duration-500 text-sm tracking-widest text-[#1A5252] font-medium hover:shadow-xl hover:shadow-black/10 hover:scale-105"
+            className="px-8 py-3.5 rounded-full text-xs sm:text-sm tracking-[0.2em] text-[#1A5252] font-medium hover:brightness-95 transition-all"
             style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
           >
             GET IN TOUCH
           </Link>
         </motion.div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        <div className="w-6 h-10 border border-white/20 rounded-full flex justify-center pt-2">
-          <motion.div
-            className="w-1 h-2 rounded-full bg-white/40"
-            animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-        </div>
-      </motion.div>
     </section>
   );
 }
 
-/* ─── Features / Services ─── */
-const features = [
-  { icon: Camera, title: 'Wedding Stories', desc: 'Cinematic coverage of your most precious day, from vows to the final dance.' },
-  { icon: Heart, title: 'Engagement Shoots', desc: 'Intimate pre-wedding sessions that celebrate your unique love story.' },
-  { icon: Sparkles, title: 'Kids Photography', desc: 'Playful, natural portraits through our sub-brand Wee Eyes.' },
-  { icon: Star, title: 'Fine Art Portraits', desc: 'Timeless, gallery-worthy portraits crafted with artistic vision.' },
-  { icon: Users, title: 'Family Sessions', desc: 'Candid family moments preserved in beautifully composed frames.' },
-  { icon: Award, title: 'Events & Occasions', desc: 'Professional coverage for milestones, birthdays, and celebrations.' },
-];
-
-function Features() {
-  return (
-    <section className="py-28 bg-gradient-to-b from-[#2D7272] to-[#245E5E] relative overflow-hidden">
-      {/* Subtle background accent */}
-      <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-[0.03]" style={{ background: `radial-gradient(circle, ${GOLD}, transparent)` }} />
-
-      <div className="max-w-7xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <p className="tracking-[0.4em] text-xs uppercase mb-3" style={{ color: GOLD }}>What We Offer</p>
-          <h2 className="text-3xl md:text-5xl font-extralight tracking-widest text-white">OUR SERVICES</h2>
-          <div className="w-12 h-px mx-auto mt-6" style={{ backgroundColor: GOLD }} />
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f, i) => (
-            <motion.div
-              key={f.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ y: -6, transition: { duration: 0.3 } }}
-              className="group p-8 rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm hover:border-white/20 hover:bg-white/[0.06] transition-all duration-500 cursor-default"
-            >
-              <div
-                className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 transition-colors duration-500 group-hover:shadow-lg"
-                style={{ backgroundColor: `${GOLD}15`, color: GOLD_LIGHT }}
-              >
-                <f.icon size={24} />
-              </div>
-              <h3 className="text-white text-lg tracking-wider font-light mb-3">{f.title}</h3>
-              <p className="text-white/40 text-sm leading-relaxed font-light">{f.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Wedding Gallery Preview ─── */
-function WeddingGallery() {
+function Services() {
   const { photos } = usePhotos();
+  const backgrounds = photos.length > 0 ? photos.map((p) => p.url) : ['/gallery/1.jpeg', '/gallery/2.jpeg', '/gallery/3.jpeg'];
+  const sectionBackground = backgrounds[1] ?? '/gallery/2.jpeg';
 
   return (
-    <section id="weddings" className="py-28 bg-[#245E5E]">
-      <div className="max-w-7xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-20"
-        >
-          <p className="tracking-[0.4em] text-xs uppercase mb-3" style={{ color: GOLD }}>Vizz Eyes Weddings</p>
-          <h2 className="text-3xl md:text-5xl font-extralight tracking-widest text-white">WEDDING PORTFOLIO</h2>
-          <div className="w-12 h-px mx-auto mt-6" style={{ backgroundColor: `${GOLD}60` }} />
-        </motion.div>
+    <section className="relative py-16 sm:py-24 overflow-hidden">
+      <img src={sectionBackground} alt="Services background" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="absolute inset-0 bg-[#1a5252]/85" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1A5252]/95 via-[#1A5252]/80 to-[#1A5252]/95" />
 
-        {photos.length > 0 ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="max-w-3xl mx-auto aspect-[3/4] overflow-hidden rounded-3xl shadow-2xl shadow-black/20 group cursor-pointer"
-          >
-            <img
-              src={photos[0].url}
-              alt={photos[0].title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-            />
-          </motion.div>
-        ) : (
-          <p className="text-center text-white/30 text-sm tracking-widest">Photos coming soon</p>
-        )}
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="text-center mt-14 flex flex-col sm:flex-row justify-center gap-4"
-        >
-          <Link
-            to="/gallery"
-            className="inline-flex items-center justify-center gap-2 text-sm tracking-widest px-8 py-3 rounded-full transition-all duration-300 text-[#1A5252] font-medium hover:scale-105"
-            style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
-          >
-            VIEW FULL GALLERY
-          </Link>
-          <a
-            href="https://www.instagram.com/vizzeyes_weddings"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 text-sm tracking-widest hover:gap-3 transition-all duration-300 px-6 py-3 rounded-full border border-white/10 hover:border-white/30"
-            style={{ color: GOLD_LIGHT }}
-          >
-            <Instagram size={16} /> FOLLOW ON INSTAGRAM
-          </a>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── Wee Eyes Section ─── */
-function WeeEyes() {
-  return (
-    <section id="wee-eyes" className="py-28 bg-[#2D7272] relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-[0.03]" style={{ background: `radial-gradient(circle, ${GOLD}, transparent)` }} />
-
-      <div className="max-w-7xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <p className="tracking-[0.4em] text-xs uppercase mb-3" style={{ color: GOLD }}>Our Sub-Brand</p>
-          <h2 className="text-3xl md:text-5xl font-extralight tracking-widest text-white">
-            WEE <span className="font-medium" style={{ color: GOLD_LIGHT }}>EYES</span>
-          </h2>
-          <div className="w-12 h-px mx-auto mt-6 mb-6" style={{ backgroundColor: `${GOLD}60` }} />
-          <p className="text-white/50 max-w-xl mx-auto font-light leading-relaxed">
-            A special corner for our littlest stars. Wee Eyes captures the innocent, playful, and heartwarming moments of childhood — from tiny toes to giant smiles.
+      <div className="max-w-7xl mx-auto px-4 relative z-10">
+        <div className="text-center mb-12 sm:mb-16">
+          <p className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-3" style={{ color: GOLD }}>
+            What We Offer
           </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight tracking-[0.2em] text-white">
+            OUR SERVICES
+          </h2>
+          <div className="w-14 h-px mx-auto mt-5" style={{ backgroundColor: GOLD }} />
+        </div>
 
-          <div className="mt-10">
-            <a
-              href="https://www.instagram.com/wee_eyes"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm tracking-widest hover:gap-3 transition-all duration-300 px-6 py-3 rounded-full border border-white/10 hover:border-white/30"
-              style={{ color: GOLD_LIGHT }}
-            >
-              <Instagram size={16} /> FOLLOW WEE EYES
-            </a>
-          </div>
-        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {SERVICE_ITEMS.map((item, idx) => {
+            const cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/1.jpeg';
+            const Icon = item.icon;
+            const card = (
+              <div className="group relative min-h-[240px] rounded-2xl overflow-hidden border border-white/20 bg-black/20 shadow-xl shadow-black/20">
+                <img src={cardBackground} alt={item.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-b from-[#00000040] via-[#0f3d3dcc] to-[#0f3d3df0]" />
+                <div className="relative z-10 p-5 sm:p-6 flex flex-col h-full justify-between">
+                  <div>
+                    <div
+                      className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
+                      style={{ backgroundColor: `${GOLD}35`, color: '#fff' }}
+                    >
+                      <Icon size={20} />
+                    </div>
+                    <h3 className="text-white text-base sm:text-lg tracking-wider font-light mb-2">{item.title}</h3>
+                    <p className="text-white/80 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                  {item.href && (
+                    <span className="inline-flex mt-4 text-xs tracking-[0.2em] uppercase" style={{ color: GOLD_LIGHT }}>
+                      {item.cta}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+
+            if (!item.href) {
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.06 }}
+                >
+                  {card}
+                </motion.div>
+              );
+            }
+
+            return (
+              <motion.a
+                key={item.title}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="block"
+              >
+                {card}
+              </motion.a>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
 }
 
-/* ─── Stats Bar ─── */
 function StatsBar() {
   const stats = [
     { label: 'Weddings Covered', value: '500+' },
     { label: 'Happy Families', value: '1.2K+' },
-    { label: 'Years Experience', value: '8+' },
+    { label: 'Years Experience', value: '12+' },
     { label: 'Awards Won', value: '15' },
   ];
 
   return (
-    <section className="py-16 bg-[#1A5252] border-y border-white/[0.06]">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+    <section className="py-12 sm:py-16 bg-[#1A5252] border-y border-white/[0.08]">
+      <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
         {stats.map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.15 }}
+            transition={{ delay: i * 0.12 }}
             className="text-center"
           >
-            <p className="text-3xl md:text-4xl font-light tracking-wider mb-2" style={{ color: GOLD_LIGHT }}>{s.value}</p>
-            <p className="text-white/30 text-xs tracking-[0.3em] uppercase">{s.label}</p>
+            <p className="text-2xl sm:text-4xl font-light tracking-wider mb-2" style={{ color: GOLD_LIGHT }}>{s.value}</p>
+            <p className="text-white/40 text-[10px] sm:text-xs tracking-[0.25em] uppercase">{s.label}</p>
           </motion.div>
         ))}
       </div>
@@ -485,103 +360,162 @@ function StatsBar() {
   );
 }
 
-/* ─── Contact ─── */
-function Contact() {
-  return (
-    <section id="contact" className="py-28 bg-gradient-to-b from-[#245E5E] to-[#1A5252] relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-[0.02]" style={{ background: `radial-gradient(circle, ${GOLD}, transparent)` }} />
+function WeddingGallery() {
+  const { photos } = usePhotos();
 
-      <div className="max-w-2xl mx-auto px-4 text-center relative z-10">
+  return (
+    <section id="weddings" className="py-16 sm:py-24 bg-[#245E5E]">
+      <div className="max-w-7xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-10 sm:mb-14"
         >
-          <p className="tracking-[0.4em] text-xs uppercase mb-3" style={{ color: GOLD }}>Let's Create Together</p>
-          <h2 className="text-3xl md:text-5xl font-extralight tracking-widest text-white mb-6">GET IN TOUCH</h2>
-          <div className="w-12 h-px mx-auto mb-12" style={{ backgroundColor: `${GOLD}60` }} />
+          <p className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-3" style={{ color: GOLD }}>
+            Vizz Eyes Weddings
+          </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extralight tracking-[0.2em] text-white">WEDDING PORTFOLIO</h2>
+          <div className="w-14 h-px mx-auto mt-5" style={{ backgroundColor: `${GOLD}80` }} />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="space-y-4 text-white/50 font-light"
-        >
-          <p className="tracking-widest text-sm">hello@vizzeyes.com</p>
-          <p className="tracking-widest text-sm">+91 98765 43210</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-center gap-6 mt-10"
-        >
-          <a
-            href="https://www.instagram.com/vizzeyes_weddings"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-white hover:border-white/30 transition-all duration-300"
+        {photos.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="max-w-xl mx-auto aspect-[3/4] overflow-hidden rounded-3xl shadow-2xl shadow-black/25"
           >
-            <Instagram size={18} />
-          </a>
-          <a
-            href="https://www.instagram.com/wee_eyes"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-white hover:border-white/30 transition-all duration-300"
-          >
-            <Instagram size={18} />
-          </a>
-        </motion.div>
+            <img src={photos[0].url} alt={photos[0].title} className="w-full h-full object-cover" />
+          </motion.div>
+        ) : (
+          <p className="text-center text-white/40 text-sm tracking-widest">Photos coming soon</p>
+        )}
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="mt-10"
-        >
+        <div className="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
           <Link
-            to="/contact"
-            className="inline-flex items-center justify-center gap-2 text-sm tracking-widest px-8 py-3 rounded-full transition-all duration-300 text-[#1A5252] font-medium hover:scale-105"
+            to="/gallery"
+            className="inline-flex items-center justify-center text-xs sm:text-sm tracking-[0.2em] px-7 py-3 rounded-full text-[#1A5252] font-medium"
             style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
           >
-            SEND US A MESSAGE
+            VIEW FULL GALLERY
           </Link>
-        </motion.div>
+          <a
+            href={SITE_LINKS.instagramWedding}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm tracking-[0.2em] px-6 py-3 rounded-full border border-white/20 hover:border-white/40 transition-colors"
+            style={{ color: GOLD_LIGHT }}
+          >
+            <Instagram size={16} /> FOLLOW ON INSTAGRAM
+          </a>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ─── Footer ─── */
+function WeeEyes() {
+  return (
+    <section id="wee-eyes" className="py-16 sm:py-24 bg-[#2D7272]">
+      <div className="max-w-4xl mx-auto px-4 text-center">
+        <p className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-3" style={{ color: GOLD }}>
+          Our Sub-Brand
+        </p>
+        <h2 className="text-3xl sm:text-5xl font-extralight tracking-[0.2em] text-white">
+          WEE <span style={{ color: GOLD_LIGHT }}>EYES</span>
+        </h2>
+        <div className="w-14 h-px mx-auto mt-5 mb-5" style={{ backgroundColor: `${GOLD}80` }} />
+        <p className="text-white/70 text-sm sm:text-base leading-relaxed">
+          A special corner for our littlest stars. Wee Eyes captures innocent smiles,
+          playful moods, and warm family emotions with a gentle editorial style.
+        </p>
+        <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <Link
+            to="/wee-eyes"
+            className="inline-flex items-center justify-center text-xs sm:text-sm tracking-[0.2em] px-6 py-3 rounded-full border border-white/20 text-white/85 hover:text-white hover:border-white/40"
+          >
+            OPEN WEE EYES PAGE
+          </Link>
+          <a
+            href={SITE_LINKS.instagramWeeEyes}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm tracking-[0.2em] px-6 py-3 rounded-full border border-white/20 hover:border-white/40"
+            style={{ color: GOLD_LIGHT }}
+          >
+            <Instagram size={16} /> FOLLOW WEE EYES
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  const whatsappWedding = SITE_LINKS.whatsappFromPhone(
+    SITE_CONTACT.phones[0],
+    'Hi Vizz Eyes, I would like to know more about your photography packages.'
+  );
+  const whatsappAlt = SITE_LINKS.whatsappFromPhone(
+    SITE_CONTACT.phones[1],
+    'Hi Vizz Eyes, I am interested in booking a shoot.'
+  );
+
+  return (
+    <section className="py-16 sm:py-24 bg-gradient-to-b from-[#245E5E] to-[#1A5252]">
+      <div className="max-w-2xl mx-auto px-4 text-center">
+        <p className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-3" style={{ color: GOLD }}>Let's Create Together</p>
+        <h2 className="text-3xl sm:text-5xl font-extralight tracking-[0.2em] text-white mb-5">GET IN TOUCH</h2>
+        <div className="w-14 h-px mx-auto mb-9" style={{ backgroundColor: `${GOLD}80` }} />
+
+        <div className="space-y-3 text-white/85 text-sm sm:text-base">
+          <a href={`mailto:${SITE_CONTACT.email}`} className="flex items-center justify-center gap-2 hover:text-white transition-colors">
+            <Mail size={16} /> {SITE_CONTACT.email}
+          </a>
+          <a href={whatsappWedding} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 hover:text-white transition-colors">
+            <Phone size={16} /> {SITE_CONTACT.phones[0]} (WhatsApp)
+          </a>
+          <a href={whatsappAlt} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 hover:text-white transition-colors">
+            <Phone size={16} /> {SITE_CONTACT.phones[1]} (WhatsApp)
+          </a>
+        </div>
+
+        <div className="mt-8">
+          <Link
+            to="/contact"
+            className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm tracking-[0.2em] px-8 py-3 rounded-full text-[#1A5252] font-medium"
+            style={{ background: `linear-gradient(135deg, ${GOLD_LIGHT}, ${GOLD})` }}
+          >
+            OPEN CONTACT PAGE
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] py-10 bg-[#0F3D3D]">
-      <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-        <span className="text-sm tracking-widest text-white/20 font-light">
-          © {new Date().getFullYear()} VIZZ EYES
-        </span>
-        <span className="text-xs tracking-widest text-white/20 font-light">
-          PHOTOGRAPHY FOR LIFE'S BEST MOMENTS
-        </span>
+    <footer className="border-t border-white/[0.08] py-8 bg-[#0F3D3D]">
+      <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <span className="text-xs sm:text-sm tracking-[0.2em] text-white/30 font-light">© {new Date().getFullYear()} VIZZ EYES</span>
+        <Link to="/contact" className="text-xs tracking-[0.2em] text-white/55 hover:text-white transition-colors">
+          CONTACT US
+        </Link>
       </div>
     </footer>
   );
 }
 
-/* ─── Page ─── */
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#2D7272]">
       <Navbar />
       <Hero />
-      <Features />
+      <Services />
       <StatsBar />
       <WeddingGallery />
       <WeeEyes />

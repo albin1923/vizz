@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Instagram, Filter } from 'lucide-react';
 import { useState } from 'react';
 import { usePhotos } from '../context/PhotoContext';
+import { SITE_LINKS } from '../constants/site';
 
 const GOLD = '#C8A960';
 const GOLD_LIGHT = '#E2CC8B';
@@ -27,18 +28,18 @@ export default function GalleryPage() {
         </Link>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 pb-20">
+      <div className="max-w-7xl mx-auto px-4 pb-14 sm:pb-20">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center py-16"
+          className="text-center py-10 sm:py-16"
         >
           <p className="tracking-[0.5em] text-xs uppercase mb-4" style={{ color: GOLD }}>
             Our Work
           </p>
-          <h1 className="text-4xl md:text-6xl font-extralight tracking-widest text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-extralight tracking-widest text-white">
             GALLERY
           </h1>
           <div className="w-16 h-px mx-auto mt-6" style={{ backgroundColor: GOLD }} />
@@ -49,14 +50,14 @@ export default function GalleryPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex justify-center gap-3 mb-14"
+          className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-14"
         >
           <Filter size={16} className="text-white/30 mt-2.5" />
           {(['all', 'wedding', 'kids'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-6 py-2 rounded-full text-xs tracking-[0.2em] uppercase transition-all duration-300 border ${
+              className={`px-4 sm:px-6 py-2 rounded-full text-[11px] sm:text-xs tracking-[0.2em] uppercase transition-all duration-300 border ${
                 filter === f
                   ? 'border-white/30 bg-white/10 text-white'
                   : 'border-white/[0.06] text-white/40 hover:text-white/70 hover:border-white/15'
@@ -77,7 +78,7 @@ export default function GalleryPage() {
             No photos yet. Upload via the admin dashboard.
           </motion.p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {filtered.map((photo, i) => (
               <motion.div
                 key={photo.id}
@@ -111,9 +112,9 @@ export default function GalleryPage() {
           className="text-center mt-20"
         >
           <p className="text-white/30 text-sm tracking-widest mb-6">See more on Instagram</p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
             <a
-              href="https://www.instagram.com/vizzeyes_weddings"
+              href={SITE_LINKS.instagramWedding}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm tracking-widest px-6 py-3 rounded-full border border-white/10 hover:border-white/30 transition-all duration-300"
@@ -122,7 +123,7 @@ export default function GalleryPage() {
               <Instagram size={16} /> @vizzeyes_weddings
             </a>
             <a
-              href="https://www.instagram.com/wee_eyes"
+              href={SITE_LINKS.instagramWeeEyes}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm tracking-widest px-6 py-3 rounded-full border border-white/10 hover:border-white/30 transition-all duration-300"

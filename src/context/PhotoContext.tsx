@@ -26,12 +26,22 @@ const PhotoContext = createContext<PhotoState | null>(null);
 export function PhotoProvider({ children }: { children: React.ReactNode }) {
   const [photos, setPhotos] = useState<Photo[]>(() => {
     const saved = localStorage.getItem('vizz_photos');
-    return saved ? JSON.parse(saved) : INITIAL_PHOTOS;
+    if (!saved) return INITIAL_PHOTOS;
+    try {
+      const parsed = JSON.parse(saved) as Photo[];
+      if (!Array.isArray(parsed)) return INITIAL_PHOTOS;
+      return parsed;
+    } catch {
+      return INITIAL_PHOTOS;
+    }
   });
 
-  const persist = (updated: Photo[]) => {
-    setPhotos(updated);
-    localStorage.setItem('vizz_photos', JSON.stringify(updated));
+  const persist = (updater: (current: Photo[]) => Photo[]) => {
+    setPhotos((current) => {
+      const updated = updater(current);
+      localStorage.setItem('vizz_photos', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const addPhoto = useCallback(
@@ -41,16 +51,16 @@ export function PhotoProvider({ children }: { children: React.ReactNode }) {
         id: crypto.randomUUID(),
         uploadedAt: new Date().toISOString().split('T')[0],
       };
-      persist([newPhoto, ...photos]);
+      persist((current) => [newPhoto, ...current]);
     },
-    [photos]
+    []
   );
 
   const removePhoto = useCallback(
     (id: string) => {
-      persist(photos.filter((p) => p.id !== id));
+      persist((current) => current.filter((p) => p.id !== id));
     },
-    [photos]
+    []
   );
 
   const getByCategory = useCallback(
