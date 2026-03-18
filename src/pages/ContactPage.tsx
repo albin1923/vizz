@@ -17,7 +17,7 @@ export default function ContactPage() {
     SITE_CONTACT.phones[1],
     'Hi Vizz Eyes, I am interested in booking a shoot.'
   );
-  const mapsLocationUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONTACT.location)}`;
+  const mapsLocationUrl = "https://www.google.com/search?sxsrf=ANbL-n6GS6EPP7MfdTd_OYFknCsVVbx7xw:1773845568149&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOSN6CYNRLJvE9j-RjW088bfq-Ha-bGWbYQkxVbL5C_2o_sG2tsd2V3txZil1LkkNIDkxnygvs3ZkVvq3L6IfwM41rHdrh7_0kyrrI8foXCBialBABQ%3D%3D&q=Vizz+Eyes+Photography+Reviews#lrd=0x3b0633e958a43b89:0x919c040d5f2c0049,3,,,,";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

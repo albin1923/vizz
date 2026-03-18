@@ -93,7 +93,7 @@ export default function About() {
           transition={{ duration: 0.8 }}
           className="aspect-[16/9] overflow-hidden rounded-3xl shadow-2xl shadow-black/20"
         >
-          <img
+          <img loading="lazy"
             src="/gallery/3.jpeg"
             alt="Vizz Eyes"
             className="w-full h-full object-cover"

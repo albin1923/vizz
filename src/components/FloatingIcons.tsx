@@ -1,8 +1,15 @@
 import { Phone, MessageCircle } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { SITE_CONTACT, SITE_LINKS } from '../constants/site';
 
 export default function FloatingIcons() {
   const phone = SITE_CONTACT.phones[0];
+  const location = useLocation();
+
+  if (location.pathname.includes('admin') || location.hash.includes('admin')) {
+    return null;
+  }
+
   return (
     <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-50 flex flex-col gap-2 sm:gap-3">
       <a

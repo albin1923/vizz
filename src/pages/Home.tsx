@@ -80,7 +80,7 @@ function Navbar() {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.12 }}
-      className="fixed z-50 top-3 left-[84px] sm:left-[96px] right-3 md:left-auto md:right-10 md:w-auto"
+      className="fixed z-50 top-3 left-[90px] sm:left-[110px] right-3 md:left-auto md:right-10 md:w-auto"
     >
       <div className="h-14 sm:h-16 px-5 sm:px-8 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-between md:justify-end gap-10">
         <span className="md:hidden text-sm sm:text-base font-light tracking-[0.25em] text-white mr-auto">
@@ -154,6 +154,7 @@ function Hero() {
       </motion.div>
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#153f3f]/80 via-[#1c5858]/75 to-[#1c5858]/95" />
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_30%_30%,rgba(200,169,96,0.18),transparent_50%)]" />
+      <div className="absolute bottom-0 left-0 right-0 h-48 z-[2] bg-gradient-to-b from-transparent to-[#1a5252] mix-blend-normal" />
 
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-20 sm:pt-16">
         <motion.p
@@ -240,9 +241,9 @@ function Services() {
 
   return (
     <section className="relative py-16 sm:py-24 overflow-hidden">
-      <img src={sectionBackground} alt="Services background" className="absolute inset-0 w-full h-full object-cover" />
+      <img src={sectionBackground} alt="Services background" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
       <div className="absolute inset-0 bg-[#1a5252]/85" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#1A5252]/95 via-[#1A5252]/80 to-[#1A5252]/95" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#1A5252] via-[#1A5252]/80 to-[#1A5252]/95" />
 
       <div className="max-w-7xl mx-auto px-4 relative z-10">
         <div className="text-center mb-12 sm:mb-16">
@@ -261,7 +262,7 @@ function Services() {
             const Icon = item.icon;
             const card = (
               <div className="group relative min-h-[240px] rounded-2xl overflow-hidden border border-white/20 bg-black/20 shadow-xl shadow-black/20">
-                <img src={cardBackground} alt={item.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src={cardBackground} alt={item.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#00000040] via-[#0f3d3dcc] to-[#0f3d3df0]" />
                 <div className="relative z-10 p-5 sm:p-6 flex flex-col h-full justify-between">
                   <div>
@@ -376,7 +377,7 @@ function WeddingGallery() {
             transition={{ duration: 0.7 }}
             className="max-w-xl mx-auto aspect-[3/4] overflow-hidden rounded-3xl shadow-2xl shadow-black/25"
           >
-            <img src={photos[0].url} alt={photos[0].title} className="w-full h-full object-cover" />
+            <img src={photos[0].url} alt={photos[0].title} loading="lazy" className="w-full h-full object-cover" />
           </motion.div>
         ) : (
           <p className="text-center text-white/40 text-sm tracking-widest">Photos coming soon</p>
@@ -451,7 +452,7 @@ function Contact() {
     SITE_CONTACT.phones[1],
     'Hi Vizz Eyes, I am interested in booking a shoot.'
   );
-  const mapsLocationUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONTACT.location)}`;
+  const mapsLocationUrl = "https://www.google.com/search?sxsrf=ANbL-n6GS6EPP7MfdTd_OYFknCsVVbx7xw:1773845568149&si=AL3DRZEsmMGCryMMFSHJ3StBhOdZ2-6yYkXd_doETEE1OR-qOSN6CYNRLJvE9j-RjW088bfq-Ha-bGWbYQkxVbL5C_2o_sG2tsd2V3txZil1LkkNIDkxnygvs3ZkVvq3L6IfwM41rHdrh7_0kyrrI8foXCBialBABQ%3D%3D&q=Vizz+Eyes+Photography+Reviews#lrd=0x3b0633e958a43b89:0x919c040d5f2c0049,3,,,,";
 
   return (
     <section className="py-16 sm:py-24 bg-gradient-to-b from-[#245E5E] to-[#1A5252]">
@@ -508,9 +509,9 @@ export default function Home() {
       <Link
         to="/"
         aria-label="Vizz Eyes home"
-        className="fixed top-3 left-3 z-[55] h-14 w-14 sm:h-16 sm:w-16 rounded-2xl sm:rounded-full border border-white/20 bg-[#164646]/55 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-center"
+        className="fixed top-4 left-4 sm:top-5 sm:left-6 z-[55] flex items-center justify-center mix-blend-screen"
       >
-        <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes" className="h-9 sm:h-10 w-auto" />
+        <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes" className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-2xl brightness-125" />
       </Link>
       <Navbar />
       <Hero />

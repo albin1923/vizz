@@ -10,7 +10,7 @@ interface AuthState {
 }
 
 const DEMO_USERS: { username: string; password: string; role: Role }[] = [
-  { username: 'vizzadmin', password: 'Vizzeyes@2024!', role: 'admin' },
+  { username: 'admin@vizz', password: 'Vizzeyes@2024!', role: 'admin' },
 ];
 
 const PERMISSIONS: Record<Role, string[]> = {

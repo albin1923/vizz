@@ -89,7 +89,7 @@ export default function GalleryPage() {
                 onClick={() => setSelected(photo.id)}
                 className="group relative aspect-[3/4] overflow-hidden rounded-2xl cursor-pointer shadow-lg shadow-black/10"
               >
-                <img
+                <img loading="lazy"
                   src={photo.url}
                   alt={photo.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
