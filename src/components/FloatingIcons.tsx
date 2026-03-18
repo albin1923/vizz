@@ -19,7 +19,7 @@ export default function FloatingIcons() {
         <Phone size={20} className="sm:w-6 sm:h-6" />
       </a>
       <a
-        href={SITE_LINKS.whatsappFromPhone(phone)}
+        href={SITE_LINKS.whatsappFromPhone(phone, 'Hi Vizz Eyes, I am interested in booking a shoot.')}
         target="_blank"
         rel="noreferrer"
         className="bg-green-500 text-white p-3 sm:p-4 rounded-full shadow-xl hover:scale-110 transition-transform flex items-center justify-center"
