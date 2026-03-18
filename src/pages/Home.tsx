@@ -80,14 +80,14 @@ function Navbar() {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.12 }}
-      className="fixed z-50 top-3 left-[84px] right-3 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[min(96vw,1100px)]"
+      className="fixed z-50 top-3 left-[84px] sm:left-[96px] right-3 md:left-auto md:right-10 md:w-auto"
     >
-      <div className="h-14 sm:h-16 px-4 sm:px-6 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-end md:justify-between">
-        <span className="hidden md:block text-sm sm:text-base md:text-lg font-light tracking-[0.25em] text-white">
+      <div className="h-14 sm:h-16 px-5 sm:px-8 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-between md:justify-end gap-10">
+        <span className="md:hidden text-sm sm:text-base font-light tracking-[0.25em] text-white mr-auto">
           VIZZ <span className="font-semibold">EYES</span>
         </span>
 
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-8">
           {NAV_ITEMS.map((item) =>
             'to' in item ? (
               <Link key={item.label} to={item.to} className="text-[11px] tracking-[0.25em] text-white/70 hover:text-white transition-colors">

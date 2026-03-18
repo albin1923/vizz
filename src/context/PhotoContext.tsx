@@ -2,22 +2,15 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { Photo } from '../types';
 
-const vizzFolderImages = import.meta.glob('/public/gallery/vizz/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-}) as Record<string, string>;
+const vizzFolderImages = import.meta.glob('/public/gallery/vizz/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}');
 
-const weeFolderImages = import.meta.glob('/public/gallery/wee/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}', {
-  eager: true,
-  import: 'default',
-  query: '?url',
-}) as Record<string, string>;
+const weeFolderImages = import.meta.glob('/public/gallery/wee/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}');
 
-const toFolderPhotos = (entries: Record<string, string>, category: 'wedding' | 'kids'): Photo[] =>
-  Object.entries(entries)
-    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-    .map(([path, url], index) => {
+const toFolderPhotos = (entries: Record<string, unknown>, category: 'wedding' | 'kids'): Photo[] =>
+  Object.keys(entries)
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+    .map((path, index) => {
+      const url = path.replace('/public', '');
       const filename = path.split('/').pop() ?? `${category}-${index + 1}`;
       return {
         id: `${category}-${index + 1}`,
@@ -46,20 +39,25 @@ const PhotoContext = createContext<PhotoState | null>(null);
 export function PhotoProvider({ children }: { children: React.ReactNode }) {
   const [photos, setPhotos] = useState<Photo[]>(() => {
     const saved = localStorage.getItem('vizz_photos');
-    if (!saved) return INITIAL_PHOTOS;
-    try {
-      const parsed = JSON.parse(saved) as Photo[];
-      if (!Array.isArray(parsed)) return INITIAL_PHOTOS;
-      return parsed;
-    } catch {
-      return INITIAL_PHOTOS;
+    let customPhotos: Photo[] = [];
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Photo[];
+        if (Array.isArray(parsed)) {
+          customPhotos = parsed.filter(p => p.uploadedBy !== 'system');
+        }
+      } catch (err) {
+        console.error('Failed to parse cached photos', err);
+      }
     }
+    return [...INITIAL_PHOTOS, ...customPhotos];
   });
 
   const persist = (updater: (current: Photo[]) => Photo[]) => {
     setPhotos((current) => {
       const updated = updater(current);
-      localStorage.setItem('vizz_photos', JSON.stringify(updated));
+      const customPhotos = updated.filter(p => p.uploadedBy !== 'system');
+      localStorage.setItem('vizz_photos', JSON.stringify(customPhotos));
       return updated;
     });
   };
