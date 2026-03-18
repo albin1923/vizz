@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import Reviews from '../components/Reviews';
 import { Menu, X, Instagram, Camera, Heart, Sparkles, Star, Phone, Mail, MapPin } from 'lucide-react';
 import { usePhotos } from '../context/PhotoContext';
@@ -64,7 +64,7 @@ const SERVICE_ITEMS: ServiceItem[] = [
   },
 ];
 
-function Navbar() {
+function Navbar({ hidden }: { hidden?: boolean }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -78,8 +78,8 @@ function Navbar() {
   return (
     <motion.nav
       initial={{ y: -30, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7, delay: 0.12 }}
+      animate={{ y: hidden ? -150 : 0, opacity: 1 }}
+      transition={{ duration: 0.5, delay: hidden ? 0 : 0.12 }}
       className="fixed z-50 top-3 left-[90px] sm:left-[110px] right-3 md:left-auto md:right-10 md:w-auto"
     >
       <div className="h-14 sm:h-16 px-5 sm:px-8 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-between md:justify-end gap-10">
@@ -258,7 +258,10 @@ function Services() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {SERVICE_ITEMS.map((item, idx) => {
-            const cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/vizz/1.jpeg';
+            let cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/vizz/1.jpeg';
+            if (item.title === 'Kids Photography') {
+              cardBackground = '/gallery/wee/(20).jpeg';
+            }
             const Icon = item.icon;
             const card = (
               <div className="group relative min-h-[240px] rounded-2xl overflow-hidden border border-white/20 bg-black/20 shadow-xl shadow-black/20">
@@ -504,16 +507,31 @@ function Footer() {
 }
 
 export default function Home() {
+  const [hiddenNav, setHiddenNav] = useState(false);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 150) {
+      setHiddenNav(true);
+    } else {
+      setHiddenNav(false);
+    }
+  });
+
   return (
     <div className="min-h-screen bg-[#2D7272]">
-      <Link
-        to="/"
-        aria-label="Vizz Eyes home"
-        className="fixed top-4 left-4 sm:top-5 sm:left-6 z-[55] flex items-center justify-center mix-blend-screen"
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: hiddenNav ? -150 : 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="fixed top-2 left-2 sm:top-3 sm:left-4 z-[55] flex items-center justify-center mix-blend-screen"
       >
-        <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes" className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-2xl brightness-125" />
-      </Link>
-      <Navbar />
+        <Link to="/" aria-label="Vizz Eyes home">
+          <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes" className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-2xl brightness-125" />
+        </Link>
+      </motion.div>
+      <Navbar hidden={hiddenNav} />
       <Hero />
       <Services />
       <StatsBar />
