@@ -17,6 +17,7 @@ export default function ContactPage() {
     SITE_CONTACT.phones[1],
     'Hi Vizz Eyes, I am interested in booking a shoot.'
   );
+  const mapsLocationUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONTACT.location)}`;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -134,7 +135,14 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="text-white/30 text-xs tracking-[0.2em] uppercase mb-1">Location</p>
-                <p className="text-white/70 text-sm font-light">{SITE_CONTACT.location}</p>
+                <a
+                  href={mapsLocationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/70 text-sm font-light hover:text-white transition-colors"
+                >
+                  {SITE_CONTACT.location}
+                </a>
               </div>
             </div>
 

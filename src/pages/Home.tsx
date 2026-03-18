@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Reviews from '../components/Reviews';
-import { Menu, X, Instagram, Camera, Heart, Sparkles, Star, Phone, Mail } from 'lucide-react';
+import { Menu, X, Instagram, Camera, Heart, Sparkles, Star, Phone, Mail, MapPin } from 'lucide-react';
 import { usePhotos } from '../context/PhotoContext';
 import { SITE_CONTACT, SITE_LINKS } from '../constants/site';
 
@@ -80,15 +80,12 @@ function Navbar() {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, delay: 0.12 }}
-      className="fixed z-50 top-3 left-3 right-3 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[min(96vw,1100px)]"
+      className="fixed z-50 top-3 left-[84px] right-3 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[min(96vw,1100px)]"
     >
-      <div className="h-14 sm:h-16 px-4 sm:px-6 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes Logo" className="h-8 w-auto" />
-          <span className="text-sm sm:text-base md:text-lg font-light tracking-[0.25em] text-white">
-            VIZZ <span className="font-semibold">EYES</span>
-          </span>
-        </Link>
+      <div className="h-14 sm:h-16 px-4 sm:px-6 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-end md:justify-between">
+        <span className="hidden md:block text-sm sm:text-base md:text-lg font-light tracking-[0.25em] text-white">
+          VIZZ <span className="font-semibold">EYES</span>
+        </span>
 
         <div className="hidden md:flex items-center gap-6">
           {NAV_ITEMS.map((item) =>
@@ -166,7 +163,7 @@ function Hero() {
           className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-5"
           style={{ color: GOLD_LIGHT }}
         >
-          Premium Photography | Over 200+ Baptisms Covered
+          Premium Photography Studio
         </motion.p>
 
         <motion.h1
@@ -324,10 +321,10 @@ function Services() {
 
 function StatsBar() {
   const stats = [
+    { label: 'Baptisms Covered', value: '200+' },
     { label: 'Weddings Covered', value: '500+' },
     { label: 'Happy Families', value: '1.2K+' },
     { label: 'Years Experience', value: '12+' },
-    { label: 'Awards Won', value: '15' },
   ];
 
   return (
@@ -454,6 +451,7 @@ function Contact() {
     SITE_CONTACT.phones[1],
     'Hi Vizz Eyes, I am interested in booking a shoot.'
   );
+  const mapsLocationUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE_CONTACT.location)}`;
 
   return (
     <section className="py-16 sm:py-24 bg-gradient-to-b from-[#245E5E] to-[#1A5252]">
@@ -471,6 +469,9 @@ function Contact() {
           </a>
           <a href={whatsappAlt} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 hover:text-white transition-colors">
             <Phone size={16} /> {SITE_CONTACT.phones[1]} (WhatsApp)
+          </a>
+          <a href={mapsLocationUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 hover:text-white transition-colors">
+            <MapPin size={16} /> {SITE_CONTACT.location}
           </a>
         </div>
 
@@ -504,6 +505,13 @@ function Footer() {
 export default function Home() {
   return (
     <div className="min-h-screen bg-[#2D7272]">
+      <Link
+        to="/"
+        aria-label="Vizz Eyes home"
+        className="fixed top-3 left-3 z-[55] h-14 w-14 sm:h-16 sm:w-16 rounded-2xl sm:rounded-full border border-white/20 bg-[#164646]/55 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-center"
+      >
+        <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes" className="h-9 sm:h-10 w-auto" />
+      </Link>
       <Navbar />
       <Hero />
       <Services />
