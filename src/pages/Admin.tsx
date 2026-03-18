@@ -229,11 +229,30 @@ function UploadModal({
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<'wedding' | 'kids'>('wedding');
   const [preview, setPreview] = useState('');
+  const [uploadError, setUploadError] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+    if (!allowed.includes(file.type)) {
+      setUploadError('Please upload a JPG, PNG, WEBP, or AVIF image.');
+      e.target.value = '';
+      setPreview('');
+      return;
+    }
+
+    const maxSizeBytes = 10 * 1024 * 1024;
+    if (file.size > maxSizeBytes) {
+      setUploadError('Image size must be 10MB or less.');
+      e.target.value = '';
+      setPreview('');
+      return;
+    }
+
+    setUploadError('');
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result as string);
     reader.readAsDataURL(file);
@@ -285,11 +304,15 @@ function UploadModal({
             <input
               ref={fileRef}
               type="file"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/avif"
               onChange={handleFile}
               className="hidden"
             />
           </div>
+
+          {uploadError && (
+            <p className="text-red-300 text-xs tracking-wide">{uploadError}</p>
+          )}
 
           {/* Title */}
           <div>

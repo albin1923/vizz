@@ -7,7 +7,7 @@ import { SITE_LINKS } from '../constants/site';
 const GOLD = '#C8A960';
 const GOLD_LIGHT = '#E2CC8B';
 
-const fallbackKids = ['/gallery/7.jpeg', '/gallery/8.jpeg', '/gallery/9.jpeg'];
+const fallbackKids = ['/gallery/wee/(1).jpg.jpeg', '/gallery/wee/(2).jpg.jpeg', '/gallery/wee/(4).jpg.jpeg'];
 
 export default function WeeEyesPage() {
   const { getByCategory } = usePhotos();
@@ -37,9 +37,12 @@ export default function WeeEyesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.12 }}
-          className="text-3xl sm:text-5xl md:text-6xl font-extralight tracking-[0.2em] text-white"
+          className="flex flex-col justify-center items-center gap-3"
         >
-          WEE <span style={{ color: GOLD_LIGHT }}>EYES</span>
+          <img src="/gallery/logo/wee-logo.png" alt="Wee Eyes Logo" className="h-24 md:h-32 object-contain" />
+          <span className="text-3xl sm:text-5xl md:text-6xl font-extralight tracking-[0.2em] text-white">
+            WEE <span style={{ color: GOLD_LIGHT }}>EYES</span>
+          </span>
         </motion.h1>
         <motion.div
           initial={{ scaleX: 0 }}

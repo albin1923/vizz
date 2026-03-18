@@ -2,13 +2,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { PhotoProvider } from './context/PhotoContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import Home from './pages/Home';
-import Login from './pages/Login';
 import Admin from './pages/Admin';
 import GalleryPage from './pages/GalleryPage';
 import About from './pages/About';
 import ContactPage from './pages/ContactPage';
 import WeeEyesPage from './pages/WeeEyesPage';
+import FloatingIcons from './components/FloatingIcons';
+
+import HashLoginRouter from './components/HashLoginRouter';
 
 export default function App() {
   return (
@@ -16,14 +17,13 @@ export default function App() {
       <PhotoProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<HashLoginRouter />} />
             <Route path="/gallery" element={<GalleryPage />} />
             <Route path="/about" element={<About />} />
             <Route path="/wee-eyes" element={<WeeEyesPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/login" element={<Login />} />
             <Route
-              path="/admin"
+              path="/vizz-hidden-admin"
               element={
                 <ProtectedRoute requiredPermission="view">
                   <Admin />
@@ -31,6 +31,7 @@ export default function App() {
               }
             />
           </Routes>
+          <FloatingIcons />
         </BrowserRouter>
       </PhotoProvider>
     </AuthProvider>

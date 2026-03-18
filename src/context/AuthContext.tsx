@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { User, Role } from '../types';
 
@@ -9,9 +10,7 @@ interface AuthState {
 }
 
 const DEMO_USERS: { username: string; password: string; role: Role }[] = [
-  { username: 'admin', password: 'admin123', role: 'admin' },
-  { username: 'editor', password: 'editor123', role: 'editor' },
-  { username: 'viewer', password: 'viewer123', role: 'viewer' },
+  { username: 'vizzadmin', password: 'Vizzeyes@2024!', role: 'admin' },
 ];
 
 const PERMISSIONS: Record<Role, string[]> = {

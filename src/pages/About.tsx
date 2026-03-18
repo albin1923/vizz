@@ -73,7 +73,7 @@ export default function About() {
           className="text-center"
         >
           <p className="text-white/60 text-lg leading-relaxed font-light">
-            Vizz Eyes is a premium photography agency specialising in weddings, engagements, kids, and family portraits.
+            Vizz Eyes is a premium photography studio specialising in weddings, engagements, kids, and family portraits.
             We believe that every love story deserves to be told with care, creativity, and cinematic beauty.
           </p>
           <p className="text-white/40 text-base leading-relaxed font-light mt-6">

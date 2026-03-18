@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import Reviews from '../components/Reviews';
 import { Menu, X, Instagram, Camera, Heart, Sparkles, Star, Phone, Mail } from 'lucide-react';
 import { usePhotos } from '../context/PhotoContext';
-import { useAuth } from '../context/AuthContext';
 import { SITE_CONTACT, SITE_LINKS } from '../constants/site';
 
 const GOLD = '#C8A960';
@@ -44,6 +44,8 @@ const SERVICE_ITEMS: ServiceItem[] = [
     icon: Heart,
     title: 'Live Streaming',
     desc: 'Professional live streaming for families who cannot attend in person.',
+    href: 'https://www.youtube.com/@vizzeyesphotography',
+    cta: 'Open YouTube Channel',
   },
   {
     icon: Star,
@@ -64,7 +66,6 @@ const SERVICE_ITEMS: ServiceItem[] = [
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
 
   useEffect(() => {
     const closeOnResize = () => {
@@ -82,8 +83,11 @@ function Navbar() {
       className="fixed z-50 top-3 left-3 right-3 md:left-1/2 md:right-auto md:-translate-x-1/2 md:w-[min(96vw,1100px)]"
     >
       <div className="h-14 sm:h-16 px-4 sm:px-6 rounded-2xl sm:rounded-full border border-white/15 bg-[#164646]/45 backdrop-blur-xl shadow-2xl shadow-black/20 flex items-center justify-between">
-        <Link to="/" className="text-sm sm:text-base md:text-lg font-light tracking-[0.25em] text-white">
-          VIZZ <span className="font-semibold">EYES</span>
+        <Link to="/" className="flex items-center gap-2">
+          <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes Logo" className="h-8 w-auto" />
+          <span className="text-sm sm:text-base md:text-lg font-light tracking-[0.25em] text-white">
+            VIZZ <span className="font-semibold">EYES</span>
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-6">
@@ -98,12 +102,6 @@ function Navbar() {
               </a>
             )
           )}
-          <Link
-            to={user ? '/admin' : '/login'}
-            className="text-[11px] tracking-[0.25em] px-4 py-2 rounded-full border border-white/20 text-white hover:border-white/50 hover:bg-white/10 transition-colors"
-          >
-            {user ? 'DASHBOARD' : 'LOGIN'}
-          </Link>
         </div>
 
         <button onClick={() => setOpen((v) => !v)} className="md:hidden text-white" aria-label="Toggle navigation">
@@ -140,13 +138,6 @@ function Navbar() {
                 </a>
               )
             )}
-            <Link
-              to={user ? '/admin' : '/login'}
-              onClick={() => setOpen(false)}
-              className="block py-2 px-2 text-xs tracking-[0.25em] text-white"
-            >
-              {user ? 'DASHBOARD' : 'LOGIN'}
-            </Link>
           </motion.div>
         )}
       </AnimatePresence>
@@ -162,7 +153,7 @@ function Hero() {
   return (
     <section id="home" className="relative min-h-screen overflow-hidden flex items-center justify-center">
       <motion.div className="absolute inset-0 z-0" style={{ y: imageY, scale: imageScale }}>
-        <img src="/gallery/3.jpeg" alt="Vizz Eyes hero" className="w-full h-full object-cover" />
+        <img src="/gallery/vizz/3.jpeg" alt="Vizz Eyes hero" className="w-full h-full object-cover" />
       </motion.div>
       <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#153f3f]/80 via-[#1c5858]/75 to-[#1c5858]/95" />
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(circle_at_30%_30%,rgba(200,169,96,0.18),transparent_50%)]" />
@@ -175,7 +166,7 @@ function Hero() {
           className="tracking-[0.35em] text-[10px] sm:text-xs uppercase mb-5"
           style={{ color: GOLD_LIGHT }}
         >
-          Premium Photography Agency
+          Premium Photography | Over 200+ Baptisms Covered
         </motion.p>
 
         <motion.h1
@@ -247,8 +238,8 @@ function Hero() {
 
 function Services() {
   const { photos } = usePhotos();
-  const backgrounds = photos.length > 0 ? photos.map((p) => p.url) : ['/gallery/1.jpeg', '/gallery/2.jpeg', '/gallery/3.jpeg'];
-  const sectionBackground = backgrounds[1] ?? '/gallery/2.jpeg';
+  const backgrounds = photos.length > 0 ? photos.map((p) => p.url) : ['/gallery/vizz/1.jpeg', '/gallery/vizz/2.jpeg', '/gallery/vizz/3.jpeg'];
+  const sectionBackground = backgrounds[1] ?? '/gallery/vizz/2.jpeg';
 
   return (
     <section className="relative py-16 sm:py-24 overflow-hidden">
@@ -269,7 +260,7 @@ function Services() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {SERVICE_ITEMS.map((item, idx) => {
-            const cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/1.jpeg';
+            const cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/vizz/1.jpeg';
             const Icon = item.icon;
             const card = (
               <div className="group relative min-h-[240px] rounded-2xl overflow-hidden border border-white/20 bg-black/20 shadow-xl shadow-black/20">
@@ -519,6 +510,7 @@ export default function Home() {
       <StatsBar />
       <WeddingGallery />
       <WeeEyes />
+      <Reviews />
       <Contact />
       <Footer />
     </div>

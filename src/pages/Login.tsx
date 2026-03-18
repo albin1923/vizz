@@ -15,7 +15,7 @@ export default function Login() {
     e.preventDefault();
     setError('');
     if (login(username, password)) {
-      navigate('/admin');
+      navigate('/vizz-hidden-admin');
     } else {
       setError('Invalid credentials');
     }
@@ -74,15 +74,6 @@ export default function Login() {
             SIGN IN
           </button>
         </form>
-
-        <div className="mt-10 p-4 bg-white/10 rounded-xl border border-white/10">
-          <p className="text-xs text-white/40 tracking-wider text-center mb-3">DEMO CREDENTIALS</p>
-          <div className="space-y-1 text-xs text-white/60 font-mono">
-            <p><span className="text-white">admin</span> / admin123 — full access</p>
-            <p><span className="text-white">editor</span> / editor123 — upload only</p>
-            <p><span className="text-white">viewer</span> / viewer123 — view only</p>
-          </div>
-        </div>
       </motion.div>
     </div>
   );
