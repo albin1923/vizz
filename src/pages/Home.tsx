@@ -259,8 +259,14 @@ function Services() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {SERVICE_ITEMS.map((item, idx) => {
             let cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/vizz/1.jpeg';
+            if (item.title === 'Wedding Photography') {
+              cardBackground = '/gallery/vizz/7.jpeg';
+            }
             if (item.title === 'Kids Photography') {
               cardBackground = '/gallery/wee/(20).jpeg';
+            }
+            if (item.title === 'Live Streaming') {
+              cardBackground = '/gallery/logo/live.jpeg';
             }
             const Icon = item.icon;
             const card = (
@@ -497,7 +503,14 @@ function Footer() {
   return (
     <footer className="border-t border-white/[0.08] py-8 bg-[#0F3D3D]">
       <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-        <span className="text-xs sm:text-sm tracking-[0.2em] text-white/30 font-light">© {new Date().getFullYear()} VIZZ EYES</span>
+        <span className="text-xs sm:text-sm tracking-[0.2em] text-white/30 font-light">
+          © {new Date().getFullYear()} VIZZ EYES
+          <br />
+          Developed by{' '}
+          <a href="https://noxusdynamics.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+            Noxus Dynamics
+          </a>
+        </span>
         <Link to="/contact" className="text-xs tracking-[0.2em] text-white/55 hover:text-white transition-colors">
           CONTACT US
         </Link>
@@ -525,7 +538,7 @@ export default function Home() {
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: hiddenNav ? -150 : 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="fixed top-2 left-2 sm:top-3 sm:left-4 z-[55] flex items-center justify-center mix-blend-screen"
+        className="fixed top-0 left-0 sm:top-1 sm:left-2 z-[55] flex items-center justify-center mix-blend-screen"
       >
         <Link to="/" aria-label="Vizz Eyes home">
           <img src="/gallery/logo/vizz-logo.png" alt="Vizz Eyes" className="h-16 sm:h-20 md:h-24 w-auto drop-shadow-2xl brightness-125" />

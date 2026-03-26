@@ -267,8 +267,13 @@ export default function ContactPage() {
       {/* Footer */}
       <footer className="border-t border-white/[0.06] py-8 sm:py-10 bg-[#0F3D3D]">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <span className="text-sm tracking-widest text-white/20 font-light">
+          <span className="text-sm tracking-widest text-white/20 font-light text-center md:text-left">
             © {new Date().getFullYear()} VIZZ EYES
+            <br />
+            Developed by{' '}
+            <a href="https://noxusdynamics.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+              Noxus Dynamics
+            </a>
           </span>
           <span className="text-xs tracking-widest text-white/20 font-light">
             PHOTOGRAPHY FOR LIFE'S BEST MOMENTS

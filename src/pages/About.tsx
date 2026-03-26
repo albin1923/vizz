@@ -94,7 +94,7 @@ export default function About() {
           className="aspect-[16/9] overflow-hidden rounded-3xl shadow-2xl shadow-black/20"
         >
           <img loading="lazy"
-            src="/gallery/3.jpeg"
+            src="/gallery/vizz/3.jpeg"
             alt="Vizz Eyes"
             className="w-full h-full object-cover"
           />
@@ -167,22 +167,17 @@ export default function About() {
                   i % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:ml-auto md:pl-12'
                 }`}
               >
-                <div
-                  className="absolute left-3 md:left-auto w-3 h-3 rounded-full top-1"
-                  style={{
-                    backgroundColor: GOLD,
-                    ...(i % 2 === 0
-                      ? { right: undefined, left: '0.6rem', ['--md-right' as string]: '-6px' }
-                      : {}),
-                  }}
-                />
-                <div
-                  className={`absolute w-3 h-3 rounded-full top-1 hidden md:block ${
-                    i % 2 === 0 ? 'right-[-6px]' : 'left-[-6px]'
+                {/* Mobile dot */}
+                <div className="md:hidden absolute w-3 h-3 rounded-full top-1.5 left-[10px]" style={{ backgroundColor: GOLD }} />
+                
+                {/* Desktop dot */}
+                <div 
+                  className={`hidden md:block absolute w-3 h-3 rounded-full top-1.5 ${
+                    i % 2 === 0 ? '-right-[6px]' : '-left-[6px]'
                   }`}
                   style={{ backgroundColor: GOLD }}
                 />
-                <div className="block md:hidden absolute w-3 h-3 rounded-full top-1 left-[0.6rem]" style={{ backgroundColor: GOLD }} />
+                
                 <p className="text-sm tracking-widest mb-1" style={{ color: GOLD_LIGHT }}>{item.year}</p>
                 <p className="text-white/50 text-sm font-light leading-relaxed">{item.text}</p>
               </motion.div>
@@ -196,6 +191,11 @@ export default function About() {
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <span className="text-sm tracking-widest text-white/20 font-light">
             © {new Date().getFullYear()} VIZZ EYES
+            <br />
+            Developed by{' '}
+            <a href="https://noxusdynamics.tech" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+              Noxus Dynamics
+            </a>
           </span>
           <span className="text-xs tracking-widest text-white/20 font-light">
             PHOTOGRAPHY FOR LIFE'S BEST MOMENTS
