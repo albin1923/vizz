@@ -260,10 +260,10 @@ function Services() {
           {SERVICE_ITEMS.map((item, idx) => {
             let cardBackground = backgrounds[idx % backgrounds.length] ?? '/gallery/vizz/1.jpeg';
             if (item.title === 'Wedding Photography') {
-              cardBackground = '/gallery/vizz/7.jpeg';
+              cardBackground = '/gallery/vizz/3.jpeg';
             }
             if (item.title === 'Kids Photography') {
-              cardBackground = '/gallery/wee/(20).jpeg';
+              cardBackground = '/gallery/wee/(4).jpg.jpeg';
             }
             if (item.title === 'Live Streaming') {
               cardBackground = '/gallery/logo/live.jpeg';
@@ -271,7 +271,12 @@ function Services() {
             const Icon = item.icon;
             const card = (
               <div className="group relative min-h-[240px] rounded-2xl overflow-hidden border border-white/20 bg-black/20 shadow-xl shadow-black/20">
-                <img src={cardBackground} alt={item.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img 
+                  src={cardBackground} 
+                  alt={item.title} 
+                  loading="lazy" 
+                  className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${item.title === 'Wedding Photography' ? 'object-[center_20%]' : ''}`} 
+                />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#00000040] via-[#0f3d3dcc] to-[#0f3d3df0]" />
                 <div className="relative z-10 p-5 sm:p-6 flex flex-col h-full justify-between">
                   <div>
@@ -386,7 +391,7 @@ function WeddingGallery() {
             transition={{ duration: 0.7 }}
             className="max-w-xl mx-auto aspect-[3/4] overflow-hidden rounded-3xl shadow-2xl shadow-black/25"
           >
-            <img src={photos[0].url} alt={photos[0].title} loading="lazy" className="w-full h-full object-cover" />
+            <img src="/gallery/vizz/9.jpeg" alt="Wedding Portfolio" loading="lazy" className="w-full h-full object-cover" />
           </motion.div>
         ) : (
           <p className="text-center text-white/40 text-sm tracking-widest">Photos coming soon</p>
