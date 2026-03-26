@@ -275,7 +275,7 @@ function Services() {
                   src={cardBackground} 
                   alt={item.title} 
                   loading="lazy" 
-                  className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${item.title === 'Wedding Photography' ? 'object-[center_20%]' : ''}`} 
+                  className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${item.title === 'Wedding Photography' ? 'object-[center_20%]' : item.title === 'Kids Photography' ? 'object-[center_30%]' : ''}`} 
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#00000040] via-[#0f3d3dcc] to-[#0f3d3df0]" />
                 <div className="relative z-10 p-5 sm:p-6 flex flex-col h-full justify-between">
